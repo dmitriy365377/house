@@ -1,22 +1,27 @@
-import express from 'express'
-import { ApolloServer } from 'apollo-server-express' 
+
+import { connectDatabase } from './database/indes';
+import express, { Application } from 'express'
+import { ApolloServer } from 'apollo-server-express'
 import { typeDefs } from './graphQL/typeDefs';
 import { resolvers } from './graphQL/resolvers'
 
 
-const app = express();
 const port = 9000;
-
-const server = new ApolloServer({ typeDefs, resolvers });
-server.applyMiddleware({ app, path: '/api' });
-
-// app.use(bodyParser.json())
-
 const one: number = 1;
 const two: number = 2;
 
+// app.get("/", (req, res) => res.send(`1 + 2 = ${one + two}`));
 
-app.get("/", (req, res) => res.send(`1 + 2 = ${one + two}`));
-app.listen(port);
+const mount = async (app: Application) => {
+    const db = await connectDatabase()
+    const server = new ApolloServer({ typeDefs, resolvers, context: () => ({ db }) });
+    server.applyMiddleware({ app, path: '/api' });
 
-console.log(`[app]: http://localhost:${port}`);
+    app.listen(port);
+    console.log(`[app]: http://localhost:${port}`);
+
+    const listings = await db.listings.find({}).toArray();
+    console.log(listings)
+}
+
+mount(express())

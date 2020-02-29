@@ -1,3 +1,4 @@
+import { Database } from './../lib/types';
 import { MongoClient } from 'mongodb';
 
 const user = 'user_31'
@@ -6,7 +7,7 @@ const cluster = 'cluster0-goeb1'
 
 const url = `mongodb+srv://${user}:${userPassword}@${cluster}.mongodb.net/test?retryWrites=true&w=majority`
 
-export const connectDatabase = async () => {
+export const connectDatabase = async (): Promise<Database> => {
     const client = await MongoClient.connect(url, {
         useNewUrlParser: true,
         useUnifiedTopology: true

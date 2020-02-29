@@ -1,4 +1,3 @@
-
 import { connectDatabase } from './database/indes';
 import express, { Application } from 'express'
 import { ApolloServer } from 'apollo-server-express'
